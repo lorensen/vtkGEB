@@ -139,7 +139,7 @@ vtkImageFlip flipK
 
 vtkImageWrapPad padK
   padK SetInputConnection [flipK GetOutputPort]
-  padK SetOutputWholeExtent 0 359 359 359 0 359 
+  padK SetOutputWholeExtent 0 359 0 359 0 359 
   padK AddObserver StartEvent "puts -nonewline \"Pad k...\";flush stdout"
   padK AddObserver EndEvent "puts \"Complete\""
 
@@ -184,7 +184,7 @@ vtkImageLogic logic2
 vtkImageShrink3D shrink
   shrink SetInputConnection [logic2 GetOutputPort]
   shrink SetShrinkFactors 2 2 2
-  #shrink SetShrinkFactors 1 1 1
+  shrink SetShrinkFactors 1 1 1
   shrink AveragingOn
 
 vtkMarchingCubes mc
@@ -265,6 +265,7 @@ ren1 ResetCameraClippingRange
 # Render the image
 #
 iren AddObserver UserEvent {wm deiconify .vtkInteract; raise .vtkInteract}
+iren Initialize
 iren Start
 
 # prevent the tk window from showing up then start the event loop
