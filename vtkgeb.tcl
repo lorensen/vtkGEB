@@ -184,7 +184,6 @@ vtkImageLogic logic2
 vtkImageShrink3D shrink
   shrink SetInputConnection [logic2 GetOutputPort]
   shrink SetShrinkFactors 2 2 2
-  shrink SetShrinkFactors 1 1 1
   shrink AveragingOn
 
 vtkMarchingCubes mc
@@ -260,6 +259,11 @@ eval [ren1 GetActiveCamera] SetFocalPoint [[ren1 GetActiveCamera] GetFocalPoint]
 [ren1 GetActiveCamera] SetPosition 1211.52 1418.5 -719.105
 [ren1 GetActiveCamera] OrthogonalizeViewUp
 ren1 ResetCameraClippingRange
+
+vtkSTLWriter writer
+writer SetFileName vtkgeb.stl
+writer SetInputConnection [normals GetOutputPort]
+writer Write
 
 #
 # Render the image
