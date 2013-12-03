@@ -151,39 +151,45 @@ vtkImageConstantPad constantPadK
   constantPadK AddObserver EndEvent "puts \"Complete\""
 
 ############################################################
+constantPadBlock Update
+contantPadV Update
 vtkImageLogic logic0
-  logic0 SetInput1 [constantPadBlock GetOutput]
-  logic0 SetInput2 [contantPadV GetOutput]
+  logic0 SetInput1Data [constantPadBlock GetOutput]
+  logic0 SetInput2Data [contantPadV GetOutput]
   logic0 SetOutputTrueValue 255
   logic0 SetOperationToAnd
   logic0 AddObserver StartEvent "puts -nonewline \"Logic v...\";flush stdout"
   logic0 AddObserver EndEvent "puts \"Complete\""
 
+logic0 Update
+constantPadT Update
 vtkImageLogic logic1
-  logic1 SetInput1 [logic0 GetOutput]
-  logic1 SetInput2 [constantPadT GetOutput]
+  logic1 SetInput1Data [logic0 GetOutput]
+  logic1 SetInput2Data [constantPadT GetOutput]
   logic1 SetOutputTrueValue 255
   logic1 SetOperationToAnd
   logic1 AddObserver StartEvent "puts -nonewline \"Logic v,t...\";flush stdout"
   logic1 AddObserver EndEvent "puts \"Complete\""
 
+logic1 Update
+constantPadK Update
 vtkImageLogic logic2
-  logic2 SetInput1 [logic1 GetOutput]
-  logic2 SetInput2 [constantPadK GetOutput]
+  logic2 SetInput1Data [logic1 GetOutput]
+  logic2 SetInput2Data [constantPadK GetOutput]
   logic2 SetOutputTrueValue 255
   logic2 SetOperationToAnd
   logic2 AddObserver StartEvent "puts -nonewline \"Logic v,t,k...\";flush stdout"
   logic2 AddObserver EndEvent "puts \"Complete\""
 
 vtkImageShrink3D shrink
-  shrink SetInput [logic2 GetOutput]
+  shrink SetInputConnection [logic2 GetOutputPort]
   shrink SetShrinkFactors 2 2 2
   #shrink SetShrinkFactors 1 1 1
   shrink AveragingOn
 
 vtkMarchingCubes mc
   mc ReleaseDataFlagOn
-  mc SetInput [shrink GetOutput]
+  mc SetInputConnection [shrink GetOutputPort]
   mc SetValue 0 127.5
   mc AddObserver StartEvent "puts -nonewline \"March...\";flush stdout"
   mc AddObserver ProgressEvent "puts -nonewline \".\";flush stdout"
@@ -191,7 +197,7 @@ vtkMarchingCubes mc
 
 vtkWindowedSincPolyDataFilter smoothPD
   smoothPD ReleaseDataFlagOn
-  smoothPD SetInput [mc GetOutput]
+  smoothPD SetInputConnection [mc GetOutputPort]
   smoothPD SetNumberOfIterations 30
   smoothPD SetPassBand .001
   smoothPD AddObserver StartEvent "puts -nonewline \"SmoothPD...\";flush stdout"
@@ -199,12 +205,12 @@ vtkWindowedSincPolyDataFilter smoothPD
 
 vtkPolyDataNormals normals
   normals ReleaseDataFlagOn
-  normals SetInput [smoothPD GetOutput]
+  normals SetInputConnection [smoothPD GetOutputPort]
   normals AddObserver StartEvent "puts -nonewline \"Normals...\";flush stdout"
   normals AddObserver EndEvent "puts \"Complete\""
 
 vtkPolyDataMapper mapper
-  mapper SetInput [normals GetOutput]
+  mapper SetInputConnection [normals GetOutputPort]
   mapper ScalarVisibilityOff
 
 vtkActor actorVTK
@@ -259,7 +265,7 @@ ren1 ResetCameraClippingRange
 # Render the image
 #
 iren AddObserver UserEvent {wm deiconify .vtkInteract; raise .vtkInteract}
-iren Initialize
+iren Start
 
 # prevent the tk window from showing up then start the event loop
 wm withdraw .

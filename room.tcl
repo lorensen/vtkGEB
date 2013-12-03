@@ -6,7 +6,7 @@ proc BuildRoom {minX maxX minY maxY minZ maxZ} {
     basePlane SetZLength [expr ($maxZ - $minZ)]
 
     if { [info command baseMapper] == "" } {vtkPolyDataMapper baseMapper;}
-     baseMapper SetInput [basePlane GetOutput]
+     baseMapper SetInputConnection [basePlane GetOutputPort]
     if { [info command base] == "" } {vtkActor base;ren1 AddActor base;}
      base SetMapper baseMapper
 
@@ -17,7 +17,7 @@ proc BuildRoom {minX maxX minY maxY minZ maxZ} {
     backPlane SetZLength 2
 
     if { [info command backMapper] == "" } {vtkPolyDataMapper backMapper;}
-     backMapper SetInput [backPlane GetOutput]
+     backMapper SetInputConnection [backPlane GetOutputPort]
     if { [info command back] == "" } {vtkActor back; ren1 AddActor back;}
    back SetMapper backMapper
 
@@ -28,7 +28,7 @@ proc BuildRoom {minX maxX minY maxY minZ maxZ} {
     rightPlane SetZLength [expr ($maxZ - $minZ)]
 
     if { [info command rightMapper] == "" } {vtkPolyDataMapper rightMapper;}
-     rightMapper SetInput [rightPlane GetOutput]
+     rightMapper SetInputConnection [rightPlane GetOutputPort]
     if { [info command right] == "" } {vtkActor right; ren1 AddActor right;}
      right SetMapper rightMapper
 
