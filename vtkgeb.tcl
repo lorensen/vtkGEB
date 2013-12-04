@@ -181,10 +181,17 @@ vtkImageLogic logic2
   logic2 AddObserver StartEvent "puts -nonewline \"Logic v,t,k...\";flush stdout"
   logic2 AddObserver EndEvent "puts \"Complete\""
 
+vtkImageChangeInformation change
+  change SetInputConnection [logic2 GetOutputPort]
+  change SetOutputSpacing .2 .2 .2
+  change Update
+puts [[change GetOutput] Print]
+
 vtkImageShrink3D shrink
-  shrink SetInputConnection [logic2 GetOutputPort]
+  shrink SetInputConnection [change GetOutputPort]
   shrink SetShrinkFactors 2 2 2
   shrink AveragingOn
+  shrink Update
 
 vtkMarchingCubes mc
   mc ReleaseDataFlagOn
@@ -258,6 +265,7 @@ eval [ren1 GetActiveCamera] SetFocalPoint [[ren1 GetActiveCamera] GetFocalPoint]
 [ren1 GetActiveCamera] SetViewUp -0.469154 0.740054 0.481886
 [ren1 GetActiveCamera] SetPosition 1211.52 1418.5 -719.105
 [ren1 GetActiveCamera] OrthogonalizeViewUp
+ren1 ResetCamera
 ren1 ResetCameraClippingRange
 
 vtkSTLWriter writer
